@@ -1,0 +1,356 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="John Doe">
+  
+  
+  
+  
+    <meta name="description" content="OJ迷宫问题（BFS）
+##题目描述给定一个大小为 N×M 的迷宫。迷宫由通道和墙壁组成，每一步可以向邻接的上下左右四格的通道移动。请求出从起点到终点所需的最小步数，题目保证一定有解。（ ‘#’， ‘.’， ‘S’， ‘G’分别表示墙壁、通道、起点和终点）
+##输入第一行两个整数n,m表示一个n行m列的迷宫(n,m&lt;=100)接下来n行每行m个字符
+##输出输出从起点走到终点的最小步数...">
+  
+  <title> [ Hexo ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+  
+    <div class="item next">
+      <a href="/2018/04/23/things/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        things
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="http://img04.sogoucdn.com/app/a/100520146/d383a2f7312b897244608fcea1c9b0e5"/>
+          <div id="homelink">Hexo</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">Home</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">Archives</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">Tags</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">Categories</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">About</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="https://github.com/TI-taniumx/TI-taniumx.github.io">Github</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>空标题</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2018-06-14</span>
+      
+        <span id = "post-title-updated">修改于 2018-06-14</span>
+      
+      
+      
+    </p>
+    
+    <h1 id="OJ迷宫问题（BFS）"><a href="#OJ迷宫问题（BFS）" class="headerlink" title="OJ迷宫问题（BFS）"></a>OJ迷宫问题（BFS）</h1><hr>
+<p>##题目描述<br>给定一个大小为 N×M 的迷宫。迷宫由通道和墙壁组成，每一步可以向邻接的上下左右四格的通道移动。请求出从起点到终点所需的最小步数，题目保证一定有解。<br>（ ‘#’， ‘.’， ‘S’， ‘G’分别表示墙壁、通道、起点和终点）</p>
+<p>##输入<br>第一行两个整数n,m表示一个n行m列的迷宫(n,m&lt;=100)<br>接下来n行每行m个字符</p>
+<p>##输出<br>输出从起点走到终点的最小步数</p>
+<p>##样例输入</p>
+<blockquote>
+<p>5 5<br>S # . . .<br>. # . # .<br>.  .  .  .  .<br>. ### .<br>. . . #G</p>
+</blockquote>
+<p>##样例输出</p>
+<blockquote>
+<p>8</p>
+</blockquote>
+<hr>
+<p>身为小白简单了解了下BFS：</p>
+<h3 id="广度优先算法教程-from-CSDN"><a href="#广度优先算法教程-from-CSDN" class="headerlink" title="广度优先算法教程 from CSDN"></a><a href="https://blog.csdn.net/raphealguo/article/details/7523411" target="_blank" rel="noopener">广度优先算法教程 from CSDN</a></h3><hr>
+<h3 id="几个首次使用的新东西"><a href="#几个首次使用的新东西" class="headerlink" title="几个首次使用的新东西"></a><em>几个首次使用的新东西</em></h3><ul>
+<li style="list-style: none"><input type="checkbox" checked> <figure class="highlight plain"><figcaption><span>pair<int,int> P;```  定义了坐标数据结构</int,int></span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">- [x] ```const int TNT=100000;``` 未访问过的坐标标志</span><br><span class="line">- [x] ```int lr[4]=&#123;1,0,-1,0&#125;; int ud[4]=&#123;0,1,0,-1&#125;;```定义了四个方向的移动操作</span><br><span class="line">- [x] ```p.first==gx&amp;&amp;p.second==gy``` typedef P 的前后两个数据访问</span><br><span class="line"></span><br><span class="line">### 代码如下</span><br><span class="line"></span><br><span class="line">```python</span><br><span class="line">#include&lt;iostream&gt;</span><br><span class="line">#include&lt;queue&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">const int TNT=100000;</span><br><span class="line">typedef pair&lt;int,int&gt; P;</span><br><span class="line">char maze[100][100];</span><br><span class="line">int N,M;</span><br><span class="line">int sx,sy;</span><br><span class="line">int gx,gy;</span><br><span class="line">int d[100][100];</span><br><span class="line">int lr[4]=&#123;1,0,-1,0&#125;;</span><br><span class="line">int ud[4]=&#123;0,1,0,-1&#125;;</span><br><span class="line">int bfs()</span><br><span class="line">&#123;</span><br><span class="line">	queue&lt;P&gt; que;</span><br><span class="line">	for(int i=0;i&lt;N;i++)</span><br><span class="line">	&#123;</span><br><span class="line">		for(int j=0;j&lt;M;j++)</span><br><span class="line">		&#123;</span><br><span class="line">			d[i][j]=TNT;</span><br><span class="line">			if(maze[i][j]==&apos;S&apos;)sx=i;sy=j;</span><br><span class="line">			if(maze[i][j]==&apos;G&apos;)gx=i;gy=j;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	que.push(P(sx,sy));</span><br><span class="line">	d[sx][sy]=0;</span><br><span class="line">	while(que.size())</span><br><span class="line">	&#123;</span><br><span class="line">		P p=que.front();</span><br><span class="line">		que.pop();</span><br><span class="line">		if(p.first==gx&amp;&amp;p.second==gy)break;//frist second P类型访问 </span><br><span class="line">		for(int i=0;i&lt;4;i++)//访问四个方向 </span><br><span class="line">		&#123;</span><br><span class="line">			int nx=p.first+lr[i];</span><br><span class="line">			int ny=p.second+ud[i];  </span><br><span class="line">            if(0&lt;nx&amp;&amp;nx&lt;N&amp;&amp;0&lt;=ny&amp;&amp;ny&lt;M&amp;&amp;maze[nx][ny]!=&apos;#&apos;&amp;&amp;d[nx][ny]==TNT)  </span><br><span class="line">            &#123;  </span><br><span class="line">                que.push(P(nx,ny));  </span><br><span class="line">                d[nx][ny]=d[p.first][p.second]+1;//路径长度+1  </span><br><span class="line">            &#125;  </span><br><span class="line">		&#125;</span><br><span class="line">	 &#125; </span><br><span class="line">	 return d[gx][gy]; </span><br><span class="line">&#125;</span><br><span class="line">void solve()  </span><br><span class="line">&#123;  </span><br><span class="line">    int res=bfs();  </span><br><span class="line">    cout&lt;&lt;res&lt;&lt;endl;  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line">int main(int argc, char const *argv[])  </span><br><span class="line">&#123;  </span><br><span class="line">    cin&gt;&gt;N&gt;&gt;M;  </span><br><span class="line">    for(int i=0;i&lt;N;i++)  </span><br><span class="line">        for(int j=0;j&lt;M;j++)  </span><br><span class="line">        &#123;  </span><br><span class="line">            cin&gt;&gt;maze[i][j];  </span><br><span class="line">        &#125;  </span><br><span class="line">    solve();  </span><br><span class="line">    return 0;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#OJ迷宫问题（BFS）"><span class="toc-text">OJ迷宫问题（BFS）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#广度优先算法教程-from-CSDN"><span class="toc-text">广度优先算法教程 from CSDN</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#几个首次使用的新东西"><span class="toc-text">几个首次使用的新东西</span></a></li></ol></li></ol></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+
+  
+
+  
+    <a href="/2018/04/23/things/" class="next">下一篇 things &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by John Doe using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="http://img04.sogoucdn.com/app/a/100520146/d383a2f7312b897244608fcea1c9b0e5">
+    <p id="description"></p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/stiekel/hexo-theme-random">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/Stiekel">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://twitter.com/SidCN">
+        
+          <i class="icon iconfont twitter">&#xe600;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://weibo.com/3020054077/profile?topnav=1&wvr=6">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://www.douban.com/people/Stiekel/">
+        
+          <i class="icon iconfont douban">&#xe60f;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+
